@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomBottomNavigationBar extends StatelessWidget {
+class CustomBottomNavigationBar extends StatefulWidget {
   final int currentIndex;
   final double marginLeft;
   final Function(int) onTap;
@@ -12,11 +12,39 @@ class CustomBottomNavigationBar extends StatelessWidget {
   });
 
   @override
+  _CustomBottomNavigationBarState createState() => _CustomBottomNavigationBarState();
+}
+
+class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  late bool _shouldAnimate;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _shouldAnimate = true;
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomBottomNavigationBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentIndex != oldWidget.currentIndex && _shouldAnimate) {
+      _controller.forward(from: 0.0);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: EdgeInsets.only(left: marginLeft, bottom: 5.0, right: 20.0),
+        padding: EdgeInsets.only(left: widget.marginLeft, bottom: 5.0, right: 20.0),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -32,38 +60,41 @@ class CustomBottomNavigationBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(
-                onPressed: () {
-                  onTap(0); // Navega para a tela de gestão de lideranças
-                },
-                icon: Icon(Icons.people),
-                color: currentIndex == 0 ? Colors.blue : Colors.grey, // Altera a cor do ícone com base no índice selecionado
-              ),
-              IconButton(
-                onPressed: () {
-                  onTap(1); // Navega para a tela de gestão de regiões
-                },
-                icon: Icon(Icons.location_on),
-                color: currentIndex == 1 ? Colors.blue : Colors.grey, // Altera a cor do ícone com base no índice selecionado
-              ),
-              IconButton(
-                onPressed: () {
-                  onTap(2); // Navega para a tela de gestão de demandas
-                },
-                icon: Icon(Icons.assignment),
-                color: currentIndex == 2 ? Colors.blue : Colors.grey, // Altera a cor do ícone com base no índice selecionado
-              ),
-              IconButton(
-                onPressed: () {
-                  onTap(3); // Navega para a tela de administração de contas
-                },
-                icon: Icon(Icons.account_balance_wallet),
-                color: currentIndex == 3 ? Colors.blue : Colors.grey, // Altera a cor do ícone com base no índice selecionado
-              ),
+              _buildNavBarItem(Icons.people, "Lideranças", 0),
+              _buildNavBarItem(Icons.location_on, "Regiões", 1),
+              _buildNavBarItem(Icons.assignment, "Demandas", 2),
+              _buildNavBarItem(Icons.account_balance_wallet, "Financeiro", 3),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildNavBarItem(IconData icon, String label, int index) {
+    final isSelected = widget.currentIndex == index;
+    final selectedColor = isSelected ? Colors.blue : Colors.grey;
+    return InkWell(
+      onTap: () {
+        widget.onTap(index);
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ScaleTransition(
+            scale: Tween<double>(begin: 0.9, end: 1.0).animate(_animation),
+            child: Icon(icon, color: selectedColor, size: 24.0),
+          ),
+          if (isSelected)
+            Text(label, style: TextStyle(color: selectedColor, fontSize: 12.0)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
