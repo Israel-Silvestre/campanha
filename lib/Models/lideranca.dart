@@ -1,3 +1,5 @@
+import 'regiao.dart';
+
 class Lideranca {
   final String nome;
   final String fotoAsset;

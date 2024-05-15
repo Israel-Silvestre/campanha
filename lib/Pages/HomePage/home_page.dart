@@ -1,3 +1,4 @@
+import 'package:campanha/Pages/Regi%C3%A3oPage/show_region.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../LiderançasPage/liderancas_show_page.dart';
@@ -51,6 +52,7 @@ class _HomePageState extends State<HomePage> {
               index: _selectedIndex,
               children: [
                 LeaderManagementPage(scrollController: _scrollController),
+                RegioesPage()
                 // Adicione outras páginas aqui conforme necessário
               ],
             ),
