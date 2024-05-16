@@ -46,9 +46,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> w
       child: Padding(
         padding: EdgeInsets.only(left: widget.marginLeft, bottom: 5.0, right: 20.0),
         child: Container(
+          height: 70.0, // Ajuste a altura da barra de navegação
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(50),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.3),
@@ -83,10 +84,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> w
         children: [
           ScaleTransition(
             scale: Tween<double>(begin: 0.9, end: 1.0).animate(_animation),
-            child: Icon(icon, color: selectedColor, size: 24.0),
+            child: Icon(icon, color: selectedColor, size: 28.0), // Ajuste o tamanho do ícone
           ),
           if (isSelected)
-            Text(label, style: TextStyle(color: selectedColor, fontSize: 12.0)),
+            Text(label, style: TextStyle(color: selectedColor, fontSize: 14.0)), // Ajuste o tamanho do texto
         ],
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
 import '../../Models/lideranca.dart';
 import '../../Models/regiao.dart';
 import 'Components/region_card.dart';
@@ -73,12 +72,13 @@ class RegioesPage extends StatelessWidget {
           enableInfiniteScroll: false,
           initialPage: 0,
           autoPlay: false,
+          viewportFraction: 1, // Aumenta o viewportFraction para ocupar mais espaço na tela
         ),
         items: regioes.map((regiao) {
           return Builder(
             builder: (BuildContext context) {
               return Padding(
-                padding: const EdgeInsets.all(40.0),
+                padding: const EdgeInsets.all(20.0), // Ajusta o padding do card
                 child: RegiaoCard(regiao: regiao),
               );
             },
