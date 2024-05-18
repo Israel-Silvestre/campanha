@@ -1,101 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
-class CustomBottomNavigationBar extends StatefulWidget {
+class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
-  final double marginLeft;
   final Function(int) onTap;
+  final double height;
 
   CustomBottomNavigationBar({
     required this.currentIndex,
     required this.onTap,
-    this.marginLeft = 20.0,
+    this.height = 60.0, // Altura padrão
   });
 
   @override
-  _CustomBottomNavigationBarState createState() => _CustomBottomNavigationBarState();
-}
-
-class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  late bool _shouldAnimate;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-    _shouldAnimate = true;
-  }
-
-  @override
-  void didUpdateWidget(covariant CustomBottomNavigationBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.currentIndex != oldWidget.currentIndex && _shouldAnimate) {
-      _controller.forward(from: 0.0);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: EdgeInsets.only(left: widget.marginLeft, bottom: 5.0, right: 20.0),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 20,
+            color: Colors.black.withOpacity(.1),
+          )
+        ],
+      ),
+      child: SafeArea(
         child: Container(
-          height: 70.0, // Ajuste a altura da barra de navegação
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(50),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 10,
-                offset: Offset(0, 3),
+          height: height,
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0), // Reduzir o padding vertical
+          child: GNav(
+            gap: 8,
+            activeColor: Colors.blue,
+            iconSize: 24, // Mantém o tamanho do ícone
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Ajusta o preenchimento para ícones e texto
+            duration: Duration(milliseconds: 300),
+            tabBackgroundColor: Colors.blue.withOpacity(0.1),
+            color: Colors.grey,
+            tabs: [
+              GButton(
+                icon: Icons.people,
+                text: 'Lideranças',
+                textStyle: TextStyle(fontSize: 14.0), // Mantém o tamanho do texto
+              ),
+              GButton(
+                icon: Icons.location_on,
+                text: 'Regiões',
+                textStyle: TextStyle(fontSize: 14.0), // Mantém o tamanho do texto
+              ),
+              GButton(
+                icon: Icons.assignment,
+                text: 'Demandas',
+                textStyle: TextStyle(fontSize: 14.0), // Mantém o tamanho do texto
+              ),
+              GButton(
+                icon: Icons.account_balance_wallet,
+                text: 'Financeiro',
+                textStyle: TextStyle(fontSize: 14.0), // Mantém o tamanho do texto
               ),
             ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildNavBarItem(Icons.people, "Lideranças", 0),
-              _buildNavBarItem(Icons.location_on, "Regiões", 1),
-              _buildNavBarItem(Icons.assignment, "Demandas", 2),
-              _buildNavBarItem(Icons.account_balance_wallet, "Financeiro", 3),
-            ],
+            selectedIndex: currentIndex,
+            onTabChange: onTap,
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildNavBarItem(IconData icon, String label, int index) {
-    final isSelected = widget.currentIndex == index;
-    final selectedColor = isSelected ? Colors.blue : Colors.grey;
-    return InkWell(
-      onTap: () {
-        widget.onTap(index);
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ScaleTransition(
-            scale: Tween<double>(begin: 0.9, end: 1.0).animate(_animation),
-            child: Icon(icon, color: selectedColor, size: 28.0), // Ajuste o tamanho do ícone
-          ),
-          if (isSelected)
-            Text(label, style: TextStyle(color: selectedColor, fontSize: 14.0)), // Ajuste o tamanho do texto
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

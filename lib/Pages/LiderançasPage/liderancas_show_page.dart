@@ -4,9 +4,8 @@ import '../../Models/lideranca.dart';
 import 'Components/lider_card.dart';
 
 class LeaderManagementPage extends StatelessWidget {
-  final ScrollController scrollController;
 
-  LeaderManagementPage({required this.scrollController});
+  LeaderManagementPage();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,6 @@ class LeaderManagementPage extends StatelessWidget {
     ];
 
     return ListView.builder(
-      controller: scrollController,
       itemCount: liderancas.length,
       itemBuilder: (context, index) {
         return Padding(
