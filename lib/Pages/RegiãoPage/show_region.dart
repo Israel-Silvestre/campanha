@@ -65,25 +65,42 @@ class RegioesPage extends StatelessWidget {
     List<Regiao> regioes = [regiao1, regiao2, regiao3];
 
     return Center(
-      child: CarouselSlider(
-        options: CarouselOptions(
-          height: 400.0,
-          enlargeCenterPage: true,
-          enableInfiniteScroll: false,
-          initialPage: 0,
-          autoPlay: false,
-          viewportFraction: 1, // Aumenta o viewportFraction para ocupar mais espaço na tela
-        ),
-        items: regioes.map((regiao) {
-          return Builder(
-            builder: (BuildContext context) {
-              return Padding(
-                padding: const EdgeInsets.all(20.0), // Ajusta o padding do card
-                child: RegiaoCard(regiao: regiao),
-              );
-            },
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 16), // Espaço antes do carousel
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 400.0,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
+                      initialPage: 0,
+                      autoPlay: false,
+                      viewportFraction: 1, // Aumenta o viewportFraction para ocupar mais espaço na tela
+                    ),
+                    items: regioes.map((regiao) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding: const EdgeInsets.all(20.0), // Ajusta o padding do card
+                            child: RegiaoCard(regiao: regiao),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
           );
-        }).toList(),
+        },
       ),
     );
   }

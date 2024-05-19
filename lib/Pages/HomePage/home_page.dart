@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Evita que o conteúdo seja redimensionado quando o teclado aparece
       appBar: null,
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
