@@ -4,6 +4,7 @@ import 'package:campanha/Pages/DemandasPage/gestao_demandas_page.dart';
 import 'package:campanha/Pages/LiderançasPage/liderancas_show_page.dart';
 import 'package:campanha/Pages/RegiãoPage/show_region.dart';
 import '../DemandasPage/Components/state_navbar.dart';
+import '../GastosPage/show_gastos.dart';
 import 'Components/navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -71,6 +72,7 @@ class _HomePageState extends State<HomePage> {
                         LeaderManagementPage(),
                         RegioesPage(),
                         GestaoDemandasPage(),
+                        FinanceScreen(),
                       ],
                     ),
                   ),
