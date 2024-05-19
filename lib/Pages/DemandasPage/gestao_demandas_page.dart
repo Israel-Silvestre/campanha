@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'Components/demanda_card.dart';
+import 'Components/state_navbar.dart';
 
 class GestaoDemandasPage extends StatelessWidget {
   @override
@@ -24,20 +24,30 @@ class GestaoDemandasPage extends StatelessWidget {
       },
     ];
 
-    return ListView.builder(
-      padding: EdgeInsets.all(10.0),
-      itemCount: demandas.length,
-      itemBuilder: (context, index) {
-        final demanda = demandas[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: DemandaCard(
-            imageUrl: demanda['imageUrl'] as String,
-            descricao: demanda['descricao'] as String,
-            valor: demanda['valor'] as double,
-          ),
-        );
-      },
+    return Stack(
+      children: [
+        ListView.builder(
+          padding: EdgeInsets.all(10.0),
+          itemCount: demandas.length,
+          itemBuilder: (context, index) {
+            final demanda = demandas[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: DemandaCard(
+                imageUrl: demanda['imageUrl'] as String,
+                descricao: demanda['descricao'] as String,
+                valor: demanda['valor'] as double,
+              ),
+            );
+          },
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: StateNavBar(),
+        ),
+      ],
     );
   }
 }

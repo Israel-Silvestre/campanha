@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../Models/lideranca.dart';
 import '../../Models/regiao.dart';
+import '../DemandasPage/Components/state_navbar.dart';
 import 'Components/region_card.dart';
 
 class RegioesPage extends StatelessWidget {
@@ -67,38 +68,49 @@ class RegioesPage extends StatelessWidget {
     return Center(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: 16), // Espaço antes do carousel
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      height: 400.0,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
-                      initialPage: 0,
-                      autoPlay: false,
-                      viewportFraction: 1, // Aumenta o viewportFraction para ocupar mais espaço na tela
-                    ),
-                    items: regioes.map((regiao) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(20.0), // Ajusta o padding do card
-                            child: RegiaoCard(regiao: regiao),
-                          );
-                        },
-                      );
-                    }).toList(),
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
                   ),
-                ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Alinhamento central dos elementos na coluna
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 16), // Espaço antes do carousel
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 400.0,
+                          enlargeCenterPage: true,
+                          enableInfiniteScroll: false,
+                          initialPage: 0,
+                          autoPlay: false,
+                          viewportFraction: 1, // Aumenta o viewportFraction para ocupar mais espaço na tela
+                        ),
+                        items: regioes.map((regiao) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Padding(
+                                padding: const EdgeInsets.all(20.0), // Ajusta o padding do card
+                                child: RegiaoCard(regiao: regiao),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+              Positioned(
+                top: 10,
+                left: 0,
+                right: 0,
+                child: StateNavBar(),
+              ),
+            ],
           );
         },
       ),
