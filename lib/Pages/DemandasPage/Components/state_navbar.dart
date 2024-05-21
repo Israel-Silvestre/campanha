@@ -33,10 +33,10 @@ class _StateNavBarState extends State<StateNavBar> {
           children: [
             SizedBox(width: 20), // Espaçamento no início
             _buildNavItem("Recebidas", "recebidas"),
-            SizedBox(width: 35), // Espaçamento entre os itens
-            _buildNavItem("Andamento", "andamento"),
             SizedBox(width: 30), // Espaçamento entre os itens
-            _buildNavItem("Concluídas", "concluidas"),
+            _buildNavItem("Em Andamento", "Em andamento"),
+            SizedBox(width: 25), // Espaçamento entre os itens
+            _buildNavItem("Urgentes", "urgentes"),
             SizedBox(width: 20), // Espaçamento no final
           ],
         ),
