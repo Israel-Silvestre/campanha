@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../Models/regiao.dart';
+
+import '../../../../Models/regiao.dart';
 
 class RegiaoCard extends StatelessWidget {
   final Regiao regiao;

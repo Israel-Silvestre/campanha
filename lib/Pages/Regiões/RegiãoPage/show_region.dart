@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../../Models/lideranca.dart';
-import '../../Models/regiao.dart';
-import '../DemandasPage/Components/state_navbar.dart';
+
+import '../../../Models/lideranca.dart';
+import '../../../Models/regiao.dart';
+import '../../Demandas/DemandasPage/Components/state_navbar.dart';
 import 'Components/region_card.dart';
 
 class RegioesPage extends StatelessWidget {

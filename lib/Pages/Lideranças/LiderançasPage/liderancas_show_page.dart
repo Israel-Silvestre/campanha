@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../Models/lideranca.dart';
-import '../HomePage/Components/search_bar.dart';
+import '../../../Models/lideranca.dart';
+import '../../HomePage/Components/search_bar.dart';
+import '../Lideranças_Info/liderancas_info_page.dart';
 import 'Components/lider_card.dart';
 
 class LeaderManagementPage extends StatefulWidget {
@@ -23,42 +24,21 @@ class _LeaderManagementPageState extends State<LeaderManagementPage> {
         pendencias: 12,
       ),
       Lideranca(
-        nome: 'Líder 1',
+        nome: 'Líder 2',
         fotoAsset: 'assets/img.png',
-        votos: 123,
-        regiao: 'Iraque',
-        demandas: 5,
-        pendencias: 12,
+        votos: 456,
+        regiao: 'Brasil',
+        demandas: 3,
+        pendencias: 7,
       ),
-
       Lideranca(
-        nome: 'Líder 1',
+        nome: 'Líder 3',
         fotoAsset: 'assets/img.png',
-        votos: 123,
-        regiao: 'Iraque',
-        demandas: 5,
-        pendencias: 12,
+        votos: 789,
+        regiao: 'Argentina',
+        demandas: 8,
+        pendencias: 2,
       ),
-
-      Lideranca(
-        nome: 'Líder 1',
-        fotoAsset: 'assets/img.png',
-        votos: 123,
-        regiao: 'Iraque',
-        demandas: 5,
-        pendencias: 12,
-      ),
-
-      Lideranca(
-        nome: 'Líder 1',
-        fotoAsset: 'assets/img.png',
-        votos: 123,
-        regiao: 'Iraque',
-        demandas: 5,
-        pendencias: 12,
-      ),
-
-
     ];
 
     return NotificationListener<ScrollNotification>(
@@ -91,6 +71,14 @@ class _LeaderManagementPageState extends State<LeaderManagementPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: LiderCard(
                     lideranca: lideranca,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LiderancaPage(lideranca: lideranca),
+                        ),
+                      );
+                    },
                   ),
                 );
               }

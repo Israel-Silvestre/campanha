@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:campanha/Pages/DemandasPage/gestao_demandas_page.dart';
-import 'package:campanha/Pages/LiderançasPage/liderancas_show_page.dart';
-import 'package:campanha/Pages/RegiãoPage/show_region.dart';
-import '../GastosPage/show_gastos.dart';
+import '../Demandas/DemandasPage/gestao_demandas_page.dart';
+import '../Gastos/GastosPage/show_gastos.dart';
+import '../Lideranças/LiderançasPage/liderancas_show_page.dart';
+import '../Regiões/RegiãoPage/show_region.dart';
 import 'Components/navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
