@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../../Models/lideranca.dart';
+import '../Lideranças_edit/edit_liderancas.dart';
 
 class LiderancaPage extends StatelessWidget {
   final Lideranca lideranca;
@@ -21,7 +21,13 @@ class LiderancaPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.edit, color: Colors.white),
             onPressed: () {
-              // Lógica para edição será adicionada futuramente
+              // Navegue para a página de edição ao pressionar o ícone de lápis
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditLiderancaPage(lideranca: lideranca),
+                ),
+              );
             },
           ),
         ],
@@ -58,7 +64,7 @@ class LiderancaPage extends StatelessWidget {
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        'Região: ${lideranca.regiao}',
+                        'Região: ${lideranca.regiao.nome}',
                         style: TextStyle(
                           fontSize: 16.0,
                           color: Colors.grey[700],

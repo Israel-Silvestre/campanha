@@ -52,11 +52,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 text: 'Demandas',
                 textStyle: TextStyle(fontSize: 14.0), // Mantém o tamanho do texto
               ),
-              GButton(
-                icon: Icons.account_balance_wallet,
-                text: 'Financeiro',
-                textStyle: TextStyle(fontSize: 14.0), // Mantém o tamanho do texto
-              ),
             ],
             selectedIndex: currentIndex,
             onTabChange: onTap,

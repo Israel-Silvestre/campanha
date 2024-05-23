@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../Demandas/DemandasPage/gestao_demandas_page.dart';
-import '../Gastos/GastosPage/show_gastos.dart';
 import '../Lideranças/LiderançasPage/liderancas_show_page.dart';
 import '../Regiões/RegiãoPage/show_region.dart';
 import 'Components/navigation_bar.dart';
@@ -55,7 +54,6 @@ class _HomePageState extends State<HomePage> {
                       LeaderManagementPage(),
                       RegioesPage(),
                       GestaoDemandasPage(),
-                      FinanceScreen(),
                     ],
                   ),
                 ),

@@ -77,12 +77,7 @@ class LiderCard extends StatelessWidget {
                               children: [
                                 Text("Votos: ${lideranca.votos}"),
                                 SizedBox(height: 5.0),
-                                Text("Região: ${lideranca.regiao}"),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
+                                Text("Região: ${lideranca.regiao.nome}"),
                                 Text("Demandas: ${lideranca.demandas}"),
                                 SizedBox(height: 5.0),
                                 Text("Pendências: ${lideranca.pendencias}"),
