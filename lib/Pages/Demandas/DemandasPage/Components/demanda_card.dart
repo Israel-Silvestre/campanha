@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../../Models/demanda.dart';
 
 class DemandaCard extends StatelessWidget {
-  final String imageUrl;
-  final String descricao;
-  final double valor;
+  final Demanda demanda;
 
   DemandaCard({
-    required this.imageUrl,
-    required this.descricao,
-    required this.valor,
+    required this.demanda,
   });
 
   @override
@@ -24,7 +21,7 @@ class DemandaCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
             child: Image.asset(
-              imageUrl,
+              demanda.fotoAsset,
               width: double.infinity,
               height: 150,
               fit: BoxFit.cover,
@@ -33,8 +30,16 @@ class DemandaCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              descricao,
+              demanda.titulo,
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              demanda.descricao,
+              style: TextStyle(fontSize: 14, color: Colors.grey),
               textAlign: TextAlign.left,
             ),
           ),
@@ -43,7 +48,7 @@ class DemandaCard extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                'R\$ ${valor.toStringAsFixed(2)}',
+                'R\$ ${demanda.custo.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
