@@ -15,6 +15,8 @@ class Demanda {
   final Regiao regiao;
   final Lideranca lideranca;
   final EstadoDemanda estado;
+  final double custo;
+  final String fotoAsset;
 
   Demanda({
     required this.id,
@@ -23,5 +25,7 @@ class Demanda {
     required this.regiao,
     required this.lideranca,
     required this.estado,
+    required this.custo,
+    required this.fotoAsset,
   });
 }
