@@ -1,10 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../HomePage/home_page.dart';
+import 'Controller/login_controller.dart';
 
 class LoginPage extends StatelessWidget {
   // Ajuste este valor conforme necessário para mover a logomarca para a direita
   static const double logoPaddingHorizontal = 50.0;
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final AuthService _authService = AuthService(); // Instância do AuthService
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +36,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 20.0), // Adicione um espaço entre a logomarca e o campo de login
               // Campo de login
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   hintText: 'Login',
                   filled: true,
@@ -45,6 +51,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 10.0), // Espaçamento entre os campos
               // Campo de senha
               TextField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Senha',
@@ -58,38 +65,47 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.0), // Espaçamento entre os campos e os botões
-              // Botões de Cadastre-se e Efetuar Login
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Implemente a navegação para a tela de cadastro
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.yellowAccent, // Cor de fundo azul
-                    ),
-                    child: Text(
-                      'Cadastre-se',
-                      style: TextStyle(color: Colors.black), // Cor do texto branco
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
+              // Botão de Efetuar Login preenchendo horizontalmente
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Chame o método de login
+                    User? user = await _authService.signInWithEmailAndPassword(
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                    );
+                    if (user != null) {
+                      // Se o login for bem-sucedido, navegue para a HomePage
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => HomePage()),
                       );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.yellowAccent, // Cor de fundo amarelo
-                    ),
-                    child: Text(
-                      'Efetuar Login',
-                      style: TextStyle(color: Colors.black), // Cor do texto preto
-                    ),
+                    } else {
+                      // Se o login falhar, exiba uma mensagem de erro
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Erro de Login'),
+                          content: Text('Usuário ou senha incorretos.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.yellowAccent, // Cor de fundo amarelo
                   ),
-                ],
+                  child: Text(
+                    'Efetuar Login',
+                    style: TextStyle(color: Colors.black), // Cor do texto preto
+                  ),
+                ),
               ),
             ],
           ),

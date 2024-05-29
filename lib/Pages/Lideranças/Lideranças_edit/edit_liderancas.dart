@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../Models/lideranca.dart';
 
 class EditLiderancaPage extends StatefulWidget {
@@ -89,22 +88,31 @@ class _EditLiderancaPageState extends State<EditLiderancaPage> {
               controller: TextEditingController(text: _editedPendencias.toString()),
             ),
             SizedBox(height: 16.0),
-            // Save Button
-            ElevatedButton(
-              onPressed: () {
-                // Aqui você poderia salvar as informações editadas
-                // por exemplo, através de uma função no Model ou em um serviço
-                // ou enviar para o backend
-              },
-              child: Text('Salvar'),
-            ),
-            SizedBox(height: 8.0),
-            // Cancel Button
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Fecha a tela de edição sem salvar
-              },
-              child: Text('Cancelar'),
+            // Save and Cancel Buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Fecha a tela de edição sem salvar
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Colors.grey,
+                  ),
+                  child: Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Aqui você poderia salvar as informações editadas
+                    // por exemplo, através de uma função no Model ou em um serviço
+                    // ou enviar para o backend
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                  ),
+                  child: Text('Salvar'),
+                ),
+              ],
             ),
           ],
         ),

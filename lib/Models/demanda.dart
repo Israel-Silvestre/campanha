@@ -1,6 +1,3 @@
-import 'regiao.dart';
-import 'lideranca.dart';
-
 enum EstadoDemanda {
   recebida,
   emAndamento,
@@ -12,8 +9,8 @@ class Demanda {
   final String id;
   final String titulo;
   final String descricao;
-  final Regiao regiao;
-  final Lideranca lideranca;
+  final String regiaoId;
+  final String liderancaId;
   final EstadoDemanda estado;
   final double custo;
   final String fotoAsset;
@@ -22,10 +19,36 @@ class Demanda {
     required this.id,
     required this.titulo,
     required this.descricao,
-    required this.regiao,
-    required this.lideranca,
+    required this.regiaoId,
+    required this.liderancaId,
     required this.estado,
     required this.custo,
     required this.fotoAsset,
   });
+
+  factory Demanda.fromMap(Map<String, dynamic> map) {
+    return Demanda(
+      id: map['id'],
+      titulo: map['titulo'],
+      descricao: map['descricao'],
+      regiaoId: map['regiaoId'],
+      liderancaId: map['liderancaId'],
+      estado: EstadoDemanda.values[map['estado']],
+      custo: map['custo'],
+      fotoAsset: map['fotoAsset'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'titulo': titulo,
+      'descricao': descricao,
+      'regiaoId': regiaoId,
+      'liderancaId': liderancaId,
+      'estado': estado.index,
+      'custo': custo,
+      'fotoAsset': fotoAsset,
+    };
+  }
 }

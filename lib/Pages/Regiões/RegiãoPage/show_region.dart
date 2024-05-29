@@ -1,46 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../../Models/regiao.dart';
-import '../../Lideranças/LiderançasPage/Components/search_bar.dart';
+import '../../../Persistência/região_service.dart';
 import 'Components/region_card.dart';
 import 'Components/search_bar2.dart';
 
-class RegioesPage extends StatelessWidget {
+class RegioesPage extends StatefulWidget {
+  @override
+  _RegioesPageState createState() => _RegioesPageState();
+}
+
+class _RegioesPageState extends State<RegioesPage> {
+  final RegiaoService _regiaoService = RegiaoService(); // Instância do serviço de regiões
+  List<Regiao> regioes = []; // Lista de regiões
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRegioes(); // Carrega as regiões ao iniciar a página
+  }
+
+  Future<void> _loadRegioes() async {
+    try {
+      List<Regiao> regioesFromDB = (await _regiaoService.getAllRegioes()).cast<Regiao>(); // Busca todas as regiões do banco
+      setState(() {
+        regioes = regioesFromDB; // Atualiza a lista de regiões no estado da página
+      });
+    } catch (e) {
+      print('Erro ao carregar regiões: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Criando algumas regiões sem lideranças
-    Regiao regiao1 = Regiao(
-      nome: 'Moinho dos Ventos',
-      liderancas: [],
-      votos: 100,
-      demandas: 10,
-      pendencias: 5,
-      imageUrl: 'assets/region.png',
-      id: '1',
-    );
-
-    Regiao regiao2 = Regiao(
-      nome: 'Centro',
-      liderancas: [],
-      votos: 150,
-      demandas: 20,
-      pendencias: 7,
-      imageUrl: 'assets/centro.png',
-      id: '2',
-    );
-
-    Regiao regiao3 = Regiao(
-      nome: 'Vila de Fátima',
-      liderancas: [],
-      votos: 200,
-      demandas: 15,
-      pendencias: 10,
-      imageUrl: 'assets/vila.png',
-      id: '3',
-    );
-
-    List<Regiao> regioes = [regiao1, regiao2, regiao3];
-
     return Center(
       child: LayoutBuilder(
         builder: (context, constraints) {

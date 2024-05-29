@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../Models/lideranca.dart';
-import '../../../Models/regiao.dart';
+import '../../../Persistência/lideranca_service.dart'; // Importe o serviço de lideranças
 import 'Components/search_bar.dart';
 import '../Lideranças_Info/liderancas_info_page.dart';
 import 'Components/lider_card.dart';
@@ -11,55 +11,29 @@ class LeaderManagementPage extends StatefulWidget {
 }
 
 class _LeaderManagementPageState extends State<LeaderManagementPage> {
+  final LiderancaService _liderancaService = LiderancaService(); // Instância do serviço de lideranças
   bool _showSearchBar = true;
+  List<Lideranca> liderancas = []; // Lista de lideranças
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLiderancas(); // Carrega as lideranças ao iniciar a página
+  }
+
+  Future<void> _loadLiderancas() async {
+    try {
+      List<Lideranca> liderancasFromDB = (await _liderancaService.getAllLiderancas()).cast<Lideranca>(); // Busca todas as lideranças do banco
+      setState(() {
+        liderancas = liderancasFromDB; // Atualiza a lista de lideranças no estado da página
+      });
+    } catch (e) {
+      print('Erro ao carregar lideranças: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Criando instância da região para associar às lideranças
-    Regiao regiao1 = Regiao(
-      nome: 'Moinho dos Ventos',
-      liderancas: [],
-      votos: 100,
-      demandas: 10,
-      pendencias: 5,
-      imageUrl: 'assets/region.png',
-      id: '1',
-    );
-
-    // Criando lideranças e associando-as à região criada
-    List<Lideranca> liderancas = [
-      Lideranca(
-        nome: 'Líder 1',
-        fotoAsset: 'assets/img.png',
-        votos: 789,
-        regiao: regiao1,
-        demandas: 8,
-        pendencias: 2,
-        id: '1',
-        telefone: '123',
-      ),
-      Lideranca(
-        nome: 'Líder 2',
-        fotoAsset: 'assets/img.png',
-        votos: 789,
-        regiao: regiao1,
-        demandas: 8,
-        pendencias: 2,
-        id: '2',
-        telefone: '123',
-      ),
-      Lideranca(
-        nome: 'Líder 3',
-        fotoAsset: 'assets/img.png',
-        votos: 789,
-        regiao: regiao1,
-        demandas: 8,
-        pendencias: 2,
-        id: '3',
-        telefone: '123',
-      ),
-    ];
-
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollUpdateNotification) {

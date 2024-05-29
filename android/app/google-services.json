@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "627544527168",
+    "firebase_url": "https://campanha-dbf2b-default-rtdb.firebaseio.com",
+    "project_id": "campanha-dbf2b",
+    "storage_bucket": "campanha-dbf2b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627544527168:android:f053da37ae15a93a3e6aa5",
+        "android_client_info": {
+          "package_name": "com.example.campanha.campanha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOPYrnzebHgf8Iryz0QBDR_dcl_eo_UzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

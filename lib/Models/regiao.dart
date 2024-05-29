@@ -1,13 +1,13 @@
 import 'lideranca.dart';
 
 class Regiao {
-  final String id;
-  final String nome;
-  final List<Lideranca> liderancas;
-  final int votos;
-  final int demandas;
-  final int pendencias;
-  final String imageUrl;
+  String id;
+  String nome;
+  List<Lideranca> liderancas;
+  int votos;
+  int demandas;
+  int pendencias;
+  String imageUrl;
 
   Regiao({
     required this.id,
@@ -19,39 +19,29 @@ class Regiao {
     required this.imageUrl,
   });
 
-  void adicionarLideranca(Lideranca lideranca) {
-    liderancas.add(lideranca);
+  // Método para converter um Map em uma instância de Regiao
+  factory Regiao.fromMap(Map<String, dynamic> map) {
+    return Regiao(
+      id: map['id'],
+      nome: map['nome'], // Adicione essa linha para definir o nome da região a partir do Map
+      liderancas: (map['liderancas'] as List).map((item) => Lideranca.fromMap(item)).toList(),
+      votos: map['votos'],
+      demandas: map['demandas'],
+      pendencias: map['pendencias'],
+      imageUrl: map['imageUrl'],
+    );
   }
 
-  void removerLideranca(Lideranca lideranca) {
-    liderancas.remove(lideranca);
-  }
-
-  bool liderancaExiste(Lideranca lideranca) {
-    return liderancas.contains(lideranca);
-  }
-
-  int contarDemandas() {
-    int totalDemandas = 0;
-    for (var lideranca in liderancas) {
-      totalDemandas += lideranca.demandas;
-    }
-    return totalDemandas;
-  }
-
-  int contarPendencias() {
-    int totalPendencias = 0;
-    for (var lideranca in liderancas) {
-      totalPendencias += lideranca.pendencias;
-    }
-    return totalPendencias;
-  }
-
-  int contarVotos() {
-    int totalVotos = 0;
-    for (var lideranca in liderancas) {
-      totalVotos += lideranca.votos;
-    }
-    return totalVotos;
+  // Método para converter uma instância de Regiao em um Map
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'nome': nome, // Adicione essa linha para incluir o nome da região no Map
+      'liderancas': liderancas.map((lideranca) => lideranca.toMap()).toList(),
+      'votos': votos,
+      'demandas': demandas,
+      'pendencias': pendencias,
+      'imageUrl': imageUrl,
+    };
   }
 }
