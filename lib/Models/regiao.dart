@@ -1,47 +1,54 @@
-import 'lideranca.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Regiao {
   String id;
   String nome;
-  List<Lideranca> liderancas;
-  int votos;
+  String imageURL;
   int demandas;
   int pendencias;
-  String imageUrl;
+  int votos;
+  List<int> liderancaIds;
 
   Regiao({
     required this.id,
     required this.nome,
-    required this.liderancas,
-    required this.votos,
+    required this.imageURL,
     required this.demandas,
     required this.pendencias,
-    required this.imageUrl,
+    required this.votos,
+    required this.liderancaIds,
   });
 
-  // Método para converter um Map em uma instância de Regiao
-  factory Regiao.fromMap(Map<String, dynamic> map) {
-    return Regiao(
-      id: map['id'],
-      nome: map['nome'], // Adicione essa linha para definir o nome da região a partir do Map
-      liderancas: (map['liderancas'] as List).map((item) => Lideranca.fromMap(item)).toList(),
-      votos: map['votos'],
-      demandas: map['demandas'],
-      pendencias: map['pendencias'],
-      imageUrl: map['imageUrl'],
-    );
+  // Factory method to create a Regiao object from a Firestore document
+  factory Regiao.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+
+    if (data != null) {
+      return Regiao(
+        id: data['id'].toString(),  // Assuming 'id' is a number and converting it to a string
+        nome: data['nome'] ?? '', // Tratamento para valor nulo
+        imageURL: data['imageURL'] ?? '', // Tratamento para valor nulo
+        demandas: data['demandas'] ?? 0, // Tratamento para valor nulo
+        pendencias: data['pendencias'] ?? 0, // Tratamento para valor nulo
+        votos: data['votos'] ?? 0, // Tratamento para valor nulo
+        liderancaIds: List<int>.from(data['liderancaIds'] ?? []), // Tratamento para valor nulo ou lista vazia
+      );
+    } else {
+      throw Exception("Documento não contém dados.");
+    }
   }
 
-  // Método para converter uma instância de Regiao em um Map
-  Map<String, dynamic> toMap() {
+
+  // Method to convert a Regiao object to a Firestore document
+  Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
-      'nome': nome, // Adicione essa linha para incluir o nome da região no Map
-      'liderancas': liderancas.map((lideranca) => lideranca.toMap()).toList(),
-      'votos': votos,
+      'id': int.parse(id),  // Assuming 'id' needs to be stored as an integer
+      'nome': nome,
+      'imageURL': imageURL,
       'demandas': demandas,
       'pendencias': pendencias,
-      'imageUrl': imageUrl,
+      'votos': votos,
+      'liderancaIds': liderancaIds,
     };
   }
 }

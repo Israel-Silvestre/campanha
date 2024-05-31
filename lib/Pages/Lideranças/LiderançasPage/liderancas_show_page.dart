@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../Models/lideranca.dart';
-import '../../../Persistência/lideranca_service.dart'; // Importe o serviço de lideranças
+import '../../../Persistência/lideranca_service.dart';
 import 'Components/search_bar.dart';
 import '../Lideranças_Info/liderancas_info_page.dart';
 import 'Components/lider_card.dart';

@@ -1,23 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/regiao.dart';
+import '../Models/regiao.dart';
 
 class RegiaoService {
-  final CollectionReference regionsCollection = FirebaseFirestore.instance.collection('regions');
+  final CollectionReference _regioesCollection = FirebaseFirestore.instance.collection('Regiões');
 
-  Future<void> addRegion(Regiao regiao) async {
+  // Método para adicionar uma nova região
+  Future<void> addRegiao(Regiao regiao) async {
     try {
-      await regionsCollection.doc(regiao.id).set(regiao.toMap());
-      print('Região adicionada com sucesso.');
+      // Obtém a referência para a coleção de regiões
+      QuerySnapshot querySnapshot = await _regioesCollection.get();
+      int nextId = querySnapshot.docs.length + 1; // Obtém o próximo ID
+
+      // Adiciona a região com o ID calculado
+      await _regioesCollection.doc(nextId.toString()).set(regiao.toFirestore());
     } catch (e) {
       print('Erro ao adicionar região: $e');
     }
   }
 
-  Future<Regiao?> getRegion(String id) async {
+
+  // Método para atualizar uma região existente
+  Future<void> updateRegiao(String docId, Regiao regiao) async {
     try {
-      DocumentSnapshot doc = await regionsCollection.doc(id).get();
+      await _regioesCollection.doc(docId).update(regiao.toFirestore());
+    } catch (e) {
+      print('Erro ao atualizar região: $e');
+    }
+  }
+
+  // Método para deletar uma região
+  Future<void> deleteRegiao(String docId) async {
+    try {
+      await _regioesCollection.doc(docId).delete();
+    } catch (e) {
+      print('Erro ao deletar região: $e');
+    }
+  }
+
+  // Método para obter uma região específica pelo ID do documento
+  Future<Regiao?> getRegiaoById(String docId) async {
+    try {
+      DocumentSnapshot doc = await _regioesCollection.doc(docId).get();
       if (doc.exists) {
-        return Regiao.fromMap(doc.data() as Map<String, dynamic>);
+        return Regiao.fromFirestore(doc);
       }
     } catch (e) {
       print('Erro ao obter região: $e');
@@ -25,35 +50,38 @@ class RegiaoService {
     return null;
   }
 
+  // Método para obter todas as regiões
   Future<List<Regiao>> getAllRegioes() async {
     try {
-      QuerySnapshot querySnapshot = await regionsCollection.get();
+      QuerySnapshot? querySnapshot = await _regioesCollection.get();
       List<Regiao> regioes = [];
       querySnapshot.docs.forEach((doc) {
-        regioes.add(Regiao.fromMap(doc.data() as Map<String, dynamic>));
+        try {
+          regioes.add(Regiao.fromFirestore(doc));
+        } catch (e) {
+          print('Erro ao converter documento para Regiao: $e');
+        }
       });
       return regioes;
-    } catch (e) {
-      print('Erro ao obter todas as regiões: $e');
+        } catch (e) {
+      print('Erro ao obter regiões: $e');
       return [];
     }
   }
 
-  Future<void> updateRegion(Regiao regiao) async {
+  Future<String?> getRegiaoNameById(int regiaoId) async {
     try {
-      await regionsCollection.doc(regiao.id).update(regiao.toMap());
-      print('Região atualizada com sucesso.');
+      DocumentSnapshot doc = await _regioesCollection.doc(regiaoId.toString()).get();
+      if (doc.exists) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return data['nome'] as String?;
+      } else {
+        print('Região não encontrada para o ID: $regiaoId');
+      }
     } catch (e) {
-      print('Erro ao atualizar região: $e');
+      print('Erro ao obter nome da região: $e');
     }
+    return null;
   }
 
-  Future<void> deleteRegion(String id) async {
-    try {
-      await regionsCollection.doc(id).delete();
-      print('Região excluída com sucesso.');
-    } catch (e) {
-      print('Erro ao excluir região: $e');
-    }
-  }
 }

@@ -25,6 +25,7 @@ class _RegioesPageState extends State<RegioesPage> {
       List<Regiao> regioesFromDB = (await _regiaoService.getAllRegioes()).cast<Regiao>(); // Busca todas as regiões do banco
       setState(() {
         regioes = regioesFromDB; // Atualiza a lista de regiões no estado da página
+        print('Regiões do Firebase: $regioesFromDB');
       });
     } catch (e) {
       print('Erro ao carregar regiões: $e');

@@ -50,7 +50,7 @@ class LiderCard extends StatelessWidget {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(10.0),
                       image: DecorationImage(
-                        image: AssetImage(lideranca.fotoAsset),
+                        image: NetworkImage(lideranca.fotoAsset),
                         fit: BoxFit.cover,
                       ),
                     ),

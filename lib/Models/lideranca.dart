@@ -1,11 +1,10 @@
 class Lideranca {
-  String id;
+  int id;
   String nome;
   String fotoAsset;
   int votos;
-  String regiaoId; // Alterado para armazenar apenas o ID da região
-  String nomeRegiao; // Nome da região
-
+  int regiaoId;
+  String nomeRegiao;
   int demandas;
   int pendencias;
   String telefone;
@@ -16,7 +15,7 @@ class Lideranca {
     required this.fotoAsset,
     required this.votos,
     required this.regiaoId,
-    required this.nomeRegiao,
+    this.nomeRegiao = '',
     required this.demandas,
     required this.pendencias,
     required this.telefone,
@@ -28,26 +27,25 @@ class Lideranca {
       nome: map['nome'],
       fotoAsset: map['fotoAsset'],
       votos: map['votos'],
-      regiaoId: map['regiaoId'], // Alteração: Adicionar regiaoId
-      nomeRegiao: '', // Inicializa o nome da região como vazio
+      regiaoId: map['regiaoId'],
+      nomeRegiao: map['nomeRegiao'] ?? '', // Valor padrão para nomeRegiao
       demandas: map['demandas'],
       pendencias: map['pendencias'],
       telefone: map['telefone'],
     );
   }
 
-  // Método para converter uma instância de Lideranca em um mapa
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'nome': nome,
       'fotoAsset': fotoAsset,
       'votos': votos,
-      'regiaoId': regiaoId, // Alteração: Adicionar regiaoId
+      'regiaoId': regiaoId,
+      'nomeRegiao': nomeRegiao,
       'demandas': demandas,
       'pendencias': pendencias,
       'telefone': telefone,
     };
   }
 }
-
