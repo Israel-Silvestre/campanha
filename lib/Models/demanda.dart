@@ -1,54 +1,52 @@
-enum EstadoDemanda {
-  recebida,
-  emAndamento,
-  urgente,
-  resolvida,
-}
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Demanda {
   final String id;
   final String titulo;
   final String descricao;
-  final String regiaoId;
-  final String liderancaId;
-  final EstadoDemanda estado;
-  final double custo;
+  final String estado;
   final String fotoAsset;
+  final int custo;
+  final String liderancaId;
+  final int regiaoId;
 
   Demanda({
     required this.id,
     required this.titulo,
     required this.descricao,
-    required this.regiaoId,
-    required this.liderancaId,
     required this.estado,
-    required this.custo,
     required this.fotoAsset,
+    required this.custo,
+    required this.liderancaId,
+    required this.regiaoId,
   });
 
-  factory Demanda.fromMap(Map<String, dynamic> map) {
+  // Método para converter um documento Firestore em um objeto Demanda
+  factory Demanda.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map;
     return Demanda(
-      id: map['id'],
-      titulo: map['titulo'],
-      descricao: map['descricao'],
-      regiaoId: map['regiaoId'],
-      liderancaId: map['liderancaId'],
-      estado: EstadoDemanda.values[map['estado']],
-      custo: map['custo'],
-      fotoAsset: map['fotoAsset'],
+      id: data['id'] ?? '',
+      titulo: data['titulo'] ?? '',
+      descricao: data['descrição'] ?? '',
+      estado: data['estado'] ?? '',
+      fotoAsset: data['fotoAsset'] ?? '',
+      custo: data['custo'] ?? 0,
+      liderancaId: data['liderancaId'] ?? '',
+      regiaoId: data['regiaoId'] ?? 0,
     );
   }
 
-  Map<String, dynamic> toMap() {
+  // Método para converter um objeto Demanda em um mapa de dados Firestore
+  Map<String, dynamic> toFirestore() {
     return {
       'id': id,
       'titulo': titulo,
       'descricao': descricao,
-      'regiaoId': regiaoId,
-      'liderancaId': liderancaId,
-      'estado': estado.index,
-      'custo': custo,
+      'estado': estado,
       'fotoAsset': fotoAsset,
+      'custo': custo,
+      'liderancaId': liderancaId,
+      'regiaoId': regiaoId,
     };
   }
 }

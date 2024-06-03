@@ -20,18 +20,34 @@ class DemandaCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-            child: Image.asset(
+            child: Image.network(
               demanda.fotoAsset,
               width: double.infinity,
               height: 150,
               fit: BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                        : null,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(
+                  Icons.broken_image,
+                  size: 150,
+                );
+              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               demanda.titulo,
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 20),
               textAlign: TextAlign.left,
             ),
           ),

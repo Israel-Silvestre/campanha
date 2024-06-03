@@ -7,16 +7,21 @@ class RegiaoService {
   // Método para adicionar uma nova região
   Future<void> addRegiao(Regiao regiao) async {
     try {
-      // Obtém a referência para a coleção de regiões
-      QuerySnapshot querySnapshot = await _regioesCollection.get();
-      int nextId = querySnapshot.docs.length + 1; // Obtém o próximo ID
+      // Verifica se uma região com o mesmo nome já existe
+      DocumentSnapshot existingRegiao = await _regioesCollection.doc(regiao.nome).get();
 
-      // Adiciona a região com o ID calculado
-      await _regioesCollection.doc(nextId.toString()).set(regiao.toFirestore());
+      if (existingRegiao.exists) {
+        print('Erro: Região com o nome "${regiao.nome}" já existe.');
+        return;
+      }
+
+      // Adiciona a região com o nome como ID
+      await _regioesCollection.doc(regiao.nome).set(regiao.toFirestore());
     } catch (e) {
       print('Erro ao adicionar região: $e');
     }
   }
+
 
 
   // Método para atualizar uma região existente

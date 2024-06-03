@@ -1,61 +1,52 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/demanda.dart';
+import '../Models/demanda.dart';
 
 class DemandaService {
-  final CollectionReference demandsCollection = FirebaseFirestore.instance.collection('demands');
+  final CollectionReference _demandasCollection = FirebaseFirestore.instance.collection('Demandas');
 
-  // Método para adicionar uma demanda ao banco de dados
-  Future<void> addDemand(Demanda demanda) async {
+  Future<void> addDemanda(Demanda demanda) async {
     try {
-      await demandsCollection.doc(demanda.id).set(demanda.toMap());
-      print('Demanda adicionada com sucesso.');
+      await _demandasCollection.doc(demanda.id).set(demanda.toFirestore());
     } catch (e) {
       print('Erro ao adicionar demanda: $e');
     }
   }
 
-  // Método para obter uma demanda do banco de dados pelo ID
-  Future<Demanda?> getDemand(String id) async {
+  Future<Demanda?> getDemandaById(String id) async {
     try {
-      DocumentSnapshot doc = await demandsCollection.doc(id).get();
+      DocumentSnapshot doc = await _demandasCollection.doc(id).get();
       if (doc.exists) {
-        return Demanda.fromMap(doc.data() as Map<String, dynamic>);
+        return Demanda.fromFirestore(doc);
       }
     } catch (e) {
-      print('Erro ao obter demanda: $e');
+      print('Erro ao buscar demanda: $e');
     }
     return null;
   }
 
-  // Método para buscar todas as demandas do banco de dados
-  Future<List<Demanda>> getAllDemandas() async {
+  Future<void> updateDemanda(Demanda demanda) async {
     try {
-      QuerySnapshot querySnapshot = await demandsCollection.get();
-      List<Demanda> demandas = querySnapshot.docs.map((doc) => Demanda.fromMap(doc.data() as Map<String, dynamic>)).toList();
-      return demandas;
-    } catch (e) {
-      print('Erro ao buscar demandas: $e');
-      return []; // Retorna uma lista vazia em caso de erro
-    }
-  }
-
-  // Método para atualizar uma demanda no banco de dados
-  Future<void> updateDemand(Demanda demanda) async {
-    try {
-      await demandsCollection.doc(demanda.id).update(demanda.toMap());
-      print('Demanda atualizada com sucesso.');
+      await _demandasCollection.doc(demanda.id).update(demanda.toFirestore());
     } catch (e) {
       print('Erro ao atualizar demanda: $e');
     }
   }
 
-  // Método para excluir uma demanda do banco de dados
-  Future<void> deleteDemand(String id) async {
+  Future<void> deleteDemanda(String id) async {
     try {
-      await demandsCollection.doc(id).delete();
-      print('Demanda excluída com sucesso.');
+      await _demandasCollection.doc(id).delete();
     } catch (e) {
-      print('Erro ao excluir demanda: $e');
+      print('Erro ao deletar demanda: $e');
+    }
+  }
+
+  Future<List<Demanda>> getAllDemandas() async {
+    try {
+      QuerySnapshot querySnapshot = await _demandasCollection.get();
+      return querySnapshot.docs.map((doc) => Demanda.fromFirestore(doc)).toList();
+    } catch (e) {
+      print('Erro ao buscar todas as demandas: $e');
+      return [];
     }
   }
 }
