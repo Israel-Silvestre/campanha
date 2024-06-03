@@ -16,7 +16,6 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
   final _liderancaService = LiderancaService();
   final _regiaoService = RegiaoService();
 
-  int id = 0;
   String nome = '';
   String fotoAsset = '';
   int votos = 0;
@@ -55,9 +54,6 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-        // Here you would typically upload the image to Firebase Storage and get the URL
-        // For now, we are just storing the file path
-        fotoAsset = pickedFile.path;
       }
     });
   }
@@ -66,21 +62,28 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      Lideranca newLideranca = Lideranca(
-        id: id,
-        nome: nome,
-        fotoAsset: fotoAsset, // This should be the URL after uploading the image to Firebase Storage
-        votos: votos,
-        regiaoId: int.tryParse(_selectedRegiao?.id ?? '') ?? 0,
-        nomeRegiao: _selectedRegiao?.nome ?? '',
-        demandas: demandas,
-        pendencias: pendencias,
-        telefone: telefone,
-      );
+      if (_image != null) {
+        try {
+          Lideranca newLideranca = Lideranca(
+            nome: nome,
+            fotoAsset: '',
+            votos: votos,
+            regiaoId: int.tryParse(_selectedRegiao?.id ?? '') ?? 0,
+            nomeRegiao: _selectedRegiao?.nome ?? '',
+            demandas: demandas,
+            pendencias: pendencias,
+            telefone: telefone,
+            id: 0,
+          );
 
-      await _liderancaService.addLideranca(newLideranca);
-
-      Navigator.of(context).pop();
+          await _liderancaService.addLideranca(newLideranca, _image!);
+          Navigator.of(context).pop();
+        } catch (e) {
+          print('Erro ao salvar liderança: $e');
+        }
+      } else {
+        print('Por favor, selecione uma imagem.');
+      }
     }
   }
 
@@ -98,19 +101,6 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(
-                label: 'ID',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira um ID';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  id = int.parse(value!);
-                },
-              ),
               _buildTextField(
                 label: 'Nome',
                 validator: (value) {
@@ -178,10 +168,10 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
               ),
               SizedBox(height: 16.0),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start, // Alinha os widgets no início (à esquerda)
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, // Alinha os widgets no início (à esquerda)
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _image == null
                           ? Text('Nenhuma imagem selecionada.')
@@ -190,7 +180,7 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
                         width: 100,
                         height: 100,
                       ),
-                      SizedBox(height: 16.0), // Espaço entre o texto/imagem e o botão
+                      SizedBox(height: 16.0),
                       ElevatedButton.icon(
                         onPressed: _pickImage,
                         icon: Icon(Icons.attach_file),
@@ -210,7 +200,8 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
                   onPressed: _saveLideranca,
                   child: Text('Salvar Liderança'),
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     textStyle: TextStyle(
                       fontSize: 16,
@@ -272,7 +263,12 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
             _selectedRegiao = regiao;
           });
         },
-        value: _selectedRegiao,
+        validator: (value) {
+          if (value == null) {
+            return 'Por favor, selecione uma região';
+          }
+          return null;
+        },
       ),
     );
   }

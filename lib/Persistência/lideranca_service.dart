@@ -1,15 +1,21 @@
+import 'dart:io';
+
 import 'package:campanha/Persist%C3%AAncia/regi%C3%A3o_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../Models/lideranca.dart';
 
 class LiderancaService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _liderancasCollection = FirebaseFirestore.instance.collection('Lideranças');
   final RegiaoService _regiaoService = RegiaoService();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Método para adicionar uma nova liderança
-  Future<void> addLideranca(Lideranca lideranca) async {
+  Future<void> addLideranca(Lideranca lideranca, File imageFile) async {
     try {
+      String imageUrl = await uploadImageToFirebase(imageFile);
+      lideranca.fotoAsset = imageUrl;
       await _liderancasCollection.add(lideranca.toMap());
     } catch (e) {
       print('Erro ao adicionar liderança: $e');
@@ -68,6 +74,18 @@ class LiderancaService {
     } catch (e) {
       print('Erro ao obter todas as lideranças: $e');
       return [];
+    }
+  }
+  // Método para fazer o upload de uma imagem no Firebase Storage
+  Future<String> uploadImageToFirebase(File imageFile) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference reference = _storage.ref().child('Liderancas').child(fileName);
+      UploadTask uploadTask = reference.putFile(imageFile);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      return await taskSnapshot.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Erro ao fazer upload da imagem: $e');
     }
   }
 }

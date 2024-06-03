@@ -28,7 +28,7 @@ class Lideranca {
       fotoAsset: map['fotoAsset'],
       votos: map['votos'],
       regiaoId: map['regiaoId'],
-      nomeRegiao: map['nomeRegiao'] ?? '', // Valor padrão para nomeRegiao
+      nomeRegiao: map['nomeRegiao'] ?? '',
       demandas: map['demandas'],
       pendencias: map['pendencias'],
       telefone: map['telefone'],
