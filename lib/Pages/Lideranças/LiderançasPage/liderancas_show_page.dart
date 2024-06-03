@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../Models/lideranca.dart';
 import '../../../Persistência/lideranca_service.dart';
+import '../Lideranças_create/lideranca_create.dart';
 import 'Components/search_bar.dart';
 import '../Lideranças_Info/liderancas_info_page.dart';
 import 'Components/lider_card.dart';
@@ -84,6 +85,23 @@ class _LeaderManagementPageState extends State<LeaderManagementPage> {
               right: 0,
               child: SearchBar1(liderancas: liderancas), // ou qualquer widget que você deseja mostrar
             ),
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                // Implementar navegação para a tela de criar lideranças
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddLiderancaPage(), // Substitua por sua tela de criação
+                  ),
+                );
+              },
+              backgroundColor: Colors.yellowAccent,
+              child: Icon(Icons.add, color: Colors.blue),
+            ),
+          ),
         ],
       ),
     );

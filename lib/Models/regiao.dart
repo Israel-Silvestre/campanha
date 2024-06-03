@@ -42,7 +42,7 @@ class Regiao {
   // Method to convert a Regiao object to a Firestore document
   Map<String, dynamic> toFirestore() {
     return {
-      'id': int.parse(id),  // Assuming 'id' needs to be stored as an integer
+      'id': int.parse(id),
       'nome': nome,
       'imageURL': imageURL,
       'demandas': demandas,
