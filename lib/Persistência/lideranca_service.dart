@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:campanha/Persist%C3%AAncia/regi%C3%A3o_service.dart';
+import 'package:campanha/Persistência/região_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../Models/lideranca.dart';
@@ -76,6 +75,7 @@ class LiderancaService {
       return [];
     }
   }
+
   // Método para fazer o upload de uma imagem no Firebase Storage
   Future<String> uploadImageToFirebase(File imageFile) async {
     try {
@@ -86,6 +86,22 @@ class LiderancaService {
       return await taskSnapshot.ref.getDownloadURL();
     } catch (e) {
       throw Exception('Erro ao fazer upload da imagem: $e');
+    }
+  }
+
+  // Método para obter todas as lideranças com um regiaoId específico
+  Future<List<Lideranca>> getLiderancasByRegiaoId(int regiaoId) async {
+    try {
+      QuerySnapshot querySnapshot = await _liderancasCollection.where('regiaoId', isEqualTo: regiaoId).get();
+      List<Lideranca> liderancas = [];
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        Lideranca lideranca = Lideranca.fromMap(doc.data() as Map<String, dynamic>);
+        liderancas.add(lideranca);
+      }
+      return liderancas;
+    } catch (e) {
+      print('Erro ao obter lideranças por regiaoId: $e');
+      return [];
     }
   }
 }

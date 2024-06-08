@@ -7,7 +7,6 @@ class Regiao {
   int demandas;
   int pendencias;
   int votos;
-  List<int> liderancaIds;
 
   Regiao({
     required this.id,
@@ -16,7 +15,6 @@ class Regiao {
     required this.demandas,
     required this.pendencias,
     required this.votos,
-    required this.liderancaIds,
   });
 
   // Factory method to create a Regiao object from a Firestore document
@@ -31,13 +29,11 @@ class Regiao {
         demandas: data['demandas'] ?? 0, // Tratamento para valor nulo
         pendencias: data['pendencias'] ?? 0, // Tratamento para valor nulo
         votos: data['votos'] ?? 0, // Tratamento para valor nulo
-        liderancaIds: List<int>.from(data['liderancaIds'] ?? []), // Tratamento para valor nulo ou lista vazia
       );
     } else {
       throw Exception("Documento não contém dados.");
     }
   }
-
 
   // Method to convert a Regiao object to a Firestore document
   Map<String, dynamic> toFirestore() {
@@ -48,7 +44,6 @@ class Regiao {
       'demandas': demandas,
       'pendencias': pendencias,
       'votos': votos,
-      'liderancaIds': liderancaIds,
     };
   }
 }

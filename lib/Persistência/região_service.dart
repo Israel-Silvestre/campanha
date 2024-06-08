@@ -1,28 +1,73 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../Models/regiao.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../Models/regiao.dart';
 
 class RegiaoService {
   final CollectionReference _regioesCollection = FirebaseFirestore.instance.collection('Regiões');
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final ImagePicker _picker = ImagePicker();
+
+  // Método para selecionar uma imagem do ImagePicker
+  Future<File?> pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    return pickedFile != null ? File(pickedFile.path) : null;
+  }
+
+  // Método para fazer upload de uma imagem no Firebase Storage
+  Future<String?> uploadImage(File imageFile, String imageName) async {
+    try {
+      Reference storageRef = _storage.ref().child('Regiões/$imageName');
+      UploadTask uploadTask = storageRef.putFile(imageFile);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      print('Erro ao fazer upload da imagem: $e');
+      return null;
+    }
+  }
 
   // Método para adicionar uma nova região
-  Future<void> addRegiao(Regiao regiao) async {
+  Future<void> addRegiao(Regiao regiao, File imageFile) async {
     try {
       // Verifica se uma região com o mesmo nome já existe
-      DocumentSnapshot existingRegiao = await _regioesCollection.doc(regiao.nome).get();
+      QuerySnapshot existingRegioes = await _regioesCollection.where('nome', isEqualTo: regiao.nome).get();
 
-      if (existingRegiao.exists) {
+      if (existingRegioes.docs.isNotEmpty) {
         print('Erro: Região com o nome "${regiao.nome}" já existe.');
         return;
       }
 
-      // Adiciona a região com o nome como ID
-      await _regioesCollection.doc(regiao.nome).set(regiao.toFirestore());
+      // Busca o maior ID existente e define o novo ID como o maior ID + 1
+      QuerySnapshot allRegioes = await _regioesCollection.get();
+      int newId = 1;
+      if (allRegioes.docs.isNotEmpty) {
+        List<int> ids = allRegioes.docs.map((doc) => int.parse(doc.id)).toList();
+        newId = ids.reduce((value, element) => value > element ? value : element) + 1;
+      }
+      regiao.id = newId.toString();
+
+      // Upload da imagem
+      String? imageURL = await uploadImage(imageFile, regiao.nome);
+
+      if (imageURL == null) {
+        print('Erro: Não foi possível fazer upload da imagem.');
+        return;
+      }
+
+      // Atualiza o atributo imageURL do objeto regiao
+      regiao.imageURL = imageURL;
+
+      // Adiciona a região com o novo ID
+      await _regioesCollection.doc(regiao.id).set(regiao.toFirestore());
+      print('Região adicionada com sucesso!');
     } catch (e) {
       print('Erro ao adicionar região: $e');
     }
   }
-
-
 
   // Método para atualizar uma região existente
   Future<void> updateRegiao(String docId, Regiao regiao) async {
@@ -68,7 +113,7 @@ class RegiaoService {
         }
       });
       return regioes;
-        } catch (e) {
+    } catch (e) {
       print('Erro ao obter regiões: $e');
       return [];
     }
@@ -88,5 +133,4 @@ class RegiaoService {
     }
     return null;
   }
-
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
 import '../../../../Models/regiao.dart';
 
 class RegiaoCard extends StatelessWidget {
   final Regiao regiao;
+  final int liderancaCount; // Número de lideranças
 
-  RegiaoCard({required this.regiao});
+  RegiaoCard({required this.regiao, required this.liderancaCount});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,8 @@ class RegiaoCard extends StatelessWidget {
               ),
             ),
           ),
-          Image.network( // Alterado de Image.asset para Image.network
-            regiao.imageURL, // Corrigido de imageUrl para imageURL
+          Image.network(
+            regiao.imageURL,
             width: 250,
             height: 150,
             fit: BoxFit.cover,
@@ -43,7 +43,7 @@ class RegiaoCard extends StatelessWidget {
                 Text('Votos: ${regiao.votos}', style: TextStyle(fontSize: 14)),
                 Text('Demandas: ${regiao.demandas}', style: TextStyle(fontSize: 14)),
                 Text('Pendências: ${regiao.pendencias}', style: TextStyle(fontSize: 14)),
-                Text('Lideranças: ${regiao.liderancaIds.length}', style: TextStyle(fontSize: 14)), // Corrigido de regiao.li para regiao.liderancaIds.length
+                Text('Lideranças: $liderancaCount', style: TextStyle(fontSize: 14)), // Mostra a contagem de lideranças
               ],
             ),
           ),

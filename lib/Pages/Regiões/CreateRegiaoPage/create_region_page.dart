@@ -1,56 +1,27 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import '../../../Models/lideranca.dart';
-import '../../../Persistência/lideranca_service.dart';
 import '../../../Models/regiao.dart';
 import '../../../Persistência/região_service.dart';
 
-class AddLiderancaPage extends StatefulWidget {
+class CreateRegiaoScreen extends StatefulWidget {
   @override
-  _AddLiderancaPageState createState() => _AddLiderancaPageState();
+  _CreateRegiaoScreenState createState() => _CreateRegiaoScreenState();
 }
 
-class _AddLiderancaPageState extends State<AddLiderancaPage> {
+class _CreateRegiaoScreenState extends State<CreateRegiaoScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _liderancaService = LiderancaService();
   final _regiaoService = RegiaoService();
-
-  String nome = '';
-  String fotoAsset = '';
-  int votos = 0;
-  int regiaoId = 0;
-  String nomeRegiao = '';
-  int demandas = 0;
-  int pendencias = 0;
-  String telefone = '';
+  final _nomeController = TextEditingController();
+  final _demandasController = TextEditingController();
+  final _pendenciasController = TextEditingController();
+  final _votosController = TextEditingController();
 
   File? _image;
-
   final picker = ImagePicker();
-  List<Regiao> _regioes = [];
-  Regiao? _selectedRegiao;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadRegioes();
-  }
-
-  Future<void> _loadRegioes() async {
-    try {
-      List<Regiao> regioesFromDB = await _regiaoService.getAllRegioes();
-      setState(() {
-        _regioes = regioesFromDB;
-      });
-    } catch (e) {
-      print('Erro ao carregar regiões: $e');
-    }
-  }
 
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
@@ -58,10 +29,8 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
     });
   }
 
-  Future<void> _saveLideranca() async {
+  Future<void> _addRegiao() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
       if (_image != null) {
         // Exibe o showDialog com CircularProgressIndicator
         showDialog(
@@ -76,7 +45,7 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(width: 16),
-                    Text("Salvando liderança"),
+                    Text("Criando região"),
                   ],
                 ),
               ),
@@ -85,24 +54,21 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
         );
 
         try {
-          Lideranca newLideranca = Lideranca(
-            nome: nome,
-            fotoAsset: '',
-            votos: votos,
-            regiaoId: int.tryParse(_selectedRegiao?.id ?? '') ?? 0,
-            nomeRegiao: _selectedRegiao?.nome ?? '',
-            demandas: demandas,
-            pendencias: pendencias,
-            telefone: telefone,
-            id: 0,
+          Regiao regiao = Regiao(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            nome: _nomeController.text,
+            imageURL: '',
+            demandas: int.parse(_demandasController.text),
+            pendencias: int.parse(_pendenciasController.text),
+            votos: int.parse(_votosController.text),
           );
 
-          await _liderancaService.addLideranca(newLideranca, _image!);
+          await _regiaoService.addRegiao(regiao, _image!);
           Navigator.of(context).pop(); // Fecha o showDialog após a conclusão
-          Navigator.of(context).pop(); // Fecha a tela atual após a adição da liderança
+          Navigator.of(context).pop(); // Fecha a tela atual após a adição da região
         } catch (e) {
           Navigator.of(context).pop(); // Fecha o showDialog em caso de erro
-          print('Erro ao salvar liderança: $e');
+          print('Erro ao adicionar região: $e');
         }
       } else {
         print('Por favor, selecione uma imagem.');
@@ -111,10 +77,19 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
   }
 
   @override
+  void dispose() {
+    _nomeController.dispose();
+    _demandasController.dispose();
+    _pendenciasController.dispose();
+    _votosController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adicionar Liderança'),
+        title: Text('Criar Região'),
         backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
@@ -125,6 +100,7 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildTextField(
+                controller: _nomeController,
                 label: 'Nome',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -132,25 +108,9 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  nome = value!;
-                },
               ),
               _buildTextField(
-                label: 'Votos',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o número de votos';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  votos = int.parse(value!);
-                },
-              ),
-              _buildDropdownField(),
-              _buildTextField(
+                controller: _demandasController,
                 label: 'Demandas',
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -159,11 +119,9 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  demandas = int.parse(value!);
-                },
               ),
               _buildTextField(
+                controller: _pendenciasController,
                 label: 'Pendências',
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -172,21 +130,16 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  pendencias = int.parse(value!);
-                },
               ),
               _buildTextField(
-                label: 'Telefone',
-                keyboardType: TextInputType.phone,
+                controller: _votosController,
+                label: 'Votos',
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o telefone';
+                    return 'Por favor, insira o número de votos';
                   }
                   return null;
-                },
-                onSaved: (value) {
-                  telefone = value!;
                 },
               ),
               SizedBox(height: 16.0),
@@ -220,8 +173,8 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
               SizedBox(height: 32.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: _saveLideranca,
-                  child: Text('Salvar Liderança'),
+                  onPressed: _addRegiao,
+                  child: Text('Adicionar Região'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blue,
@@ -240,14 +193,15 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
   }
 
   Widget _buildTextField({
+    required TextEditingController controller,
     required String label,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
-    void Function(String?)? onSaved,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        controller: controller,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
@@ -258,40 +212,6 @@ class _AddLiderancaPageState extends State<AddLiderancaPage> {
         ),
         keyboardType: keyboardType,
         validator: validator,
-        onSaved: onSaved,
-      ),
-    );
-  }
-
-  Widget _buildDropdownField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: DropdownButtonFormField<Regiao>(
-        decoration: InputDecoration(
-          labelText: 'Selecione a Região',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        items: _regioes.map((regiao) {
-          return DropdownMenuItem<Regiao>(
-            value: regiao,
-            child: Text(regiao.nome),
-          );
-        }).toList(),
-        onChanged: (regiao) {
-          setState(() {
-            _selectedRegiao = regiao;
-          });
-        },
-        validator: (value) {
-          if (value == null) {
-            return 'Por favor, selecione uma região';
-          }
-          return null;
-        },
       ),
     );
   }
