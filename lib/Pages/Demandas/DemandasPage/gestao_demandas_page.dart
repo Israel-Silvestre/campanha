@@ -48,7 +48,7 @@ class _GestaoDemandasPageState extends State<GestaoDemandasPage> {
           },
         ),
         Positioned(
-          top: 0,
+          top: 10,
           left: 0,
           right: 0,
           child: StateNavBar(),
