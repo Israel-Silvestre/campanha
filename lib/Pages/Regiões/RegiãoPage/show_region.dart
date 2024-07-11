@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../../Models/regiao.dart';
 import '../../../Models/lideranca.dart';
-import '../../../Persistência/região_service.dart';
 import '../../../Persistência/lideranca_service.dart';
+import '../../../Persistência/região_service.dart';
 import '../CreateRegiaoPage/create_region_page.dart';
+import '../RegiaoInfoPage/region_info_page.dart';
 import 'Components/region_card.dart';
 import 'Components/search_bar2.dart';
 
@@ -22,7 +23,7 @@ class _RegioesPageState extends State<RegioesPage> {
   @override
   void initState() {
     super.initState();
-    _loadRegioes(); // Carrega as regiões ao iniciar a página
+    _loadRegioes();
   }
 
   Future<void> _loadRegioes() async {
@@ -50,6 +51,15 @@ class _RegioesPageState extends State<RegioesPage> {
       MaterialPageRoute(builder: (context) => CreateRegiaoScreen()),
     );
     _loadRegioes(); // Recarrega as regiões ao retornar da tela de criação
+  }
+
+  void _navigateToRegionInfoPage(Regiao regiao) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegionInfoPage(regiao: regiao),
+      ),
+    );
   }
 
   @override
@@ -86,6 +96,7 @@ class _RegioesPageState extends State<RegioesPage> {
                                 child: RegiaoCard(
                                   regiao: regiao,
                                   liderancaCount: liderancaCounts[regiao.id] ?? 0,
+                                  onTap: () => _navigateToRegionInfoPage(regiao),
                                 ),
                               );
                             },
