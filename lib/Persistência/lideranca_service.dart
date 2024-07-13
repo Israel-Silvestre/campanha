@@ -1,7 +1,9 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:campanha/Persistência/região_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 import '../Models/lideranca.dart';
 
 class LiderancaService {
@@ -13,9 +15,18 @@ class LiderancaService {
   // Método para adicionar uma nova liderança
   Future<void> addLideranca(Lideranca lideranca, File imageFile) async {
     try {
+      int generateUniqueIntId() {
+        return DateTime.now().millisecondsSinceEpoch;
+      }
+      // Gerar um ID inteiro único
+      int documentId = generateUniqueIntId();
+      lideranca.id = documentId;
+
       String imageUrl = await uploadImageToFirebase(imageFile);
       lideranca.fotoAsset = imageUrl;
-      await _liderancasCollection.add(lideranca.toMap());
+
+      // Adicionar o documento ao Firestore com o ID gerado
+      await _liderancasCollection.doc(documentId.toString()).set(lideranca.toMap());
     } catch (e) {
       print('Erro ao adicionar liderança: $e');
     }
@@ -31,9 +42,16 @@ class LiderancaService {
   }
 
   // Método para deletar uma liderança
-  Future<void> deleteLideranca(int id) async {
+  Future<void> deleteLideranca(int id, String fotoAssetUrl) async {
     try {
+      // Remover a liderança do Firestore
       await _liderancasCollection.doc(id.toString()).delete();
+
+      // Remover a foto da liderança do Firebase Storage
+      if (fotoAssetUrl.isNotEmpty) {
+        Reference photoRef = FirebaseStorage.instance.refFromURL(fotoAssetUrl);
+        await photoRef.delete();
+      }
     } catch (e) {
       print('Erro ao deletar liderança: $e');
     }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../Models/lideranca.dart';
 import '../Lideranças_edit/edit_liderancas.dart';
+import '../../../Persistência/lideranca_service.dart'; // Adicionando a importação do serviço
 
 class LiderancaPage extends StatelessWidget {
   final Lideranca lideranca;
+  final LiderancaService _liderancaService = LiderancaService(); // Instância do serviço de lideranças
 
   LiderancaPage({required this.lideranca});
 
@@ -13,21 +15,33 @@ class LiderancaPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          'Currículo de ${lideranca.nome}',
+          'Liderança ${lideranca.nome}',
           style: TextStyle(color: Colors.white),
         ),
         iconTheme: IconThemeData(color: Colors.white),
         actions: [
-          IconButton(
-            icon: Icon(Icons.edit, color: Colors.white),
-            onPressed: () {
-              // Navegue para a página de edição ao pressionar o ícone de lápis
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditLiderancaPage(lideranca: lideranca),
-                ),
-              );
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (String value) {
+              if (value == 'Editar Liderança') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditLiderancaPage(lideranca: lideranca),
+                  ),
+                );
+              } else if (value == 'Remover Liderança') {
+                // Chama a função de remoção de liderança
+                _removerLideranca(context, lideranca);
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return {'Editar Liderança', 'Remover Liderança'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
             },
           ),
         ],
@@ -135,5 +149,47 @@ class LiderancaPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _removerLideranca(BuildContext context, Lideranca lideranca) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Remover Liderança'),
+          content: Text('Tem certeza de que deseja remover esta liderança?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  // Chama o método deleteLideranca do serviço
+                  await _liderancaService.deleteLideranca(lideranca.id, lideranca.fotoAsset);
+
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true); // Voltar para a tela anterior após a remoção
+                } catch (e) {
+                  print('Erro ao remover liderança: $e');
+                  Navigator.of(context).pop(false); // Manter o diálogo aberto em caso de erro
+                }
+              },
+              child: Text('Remover'),
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      if (value == true) {
+        // Atualiza a lista de lideranças na tela anterior após a remoção
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Liderança removida com sucesso!')),
+        );
+      }
+    });
   }
 }
